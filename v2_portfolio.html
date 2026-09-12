@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ravali Kallem | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #020617;
+      color: #e2e8f0;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 3rem;
+      background: rgba(15,23,42,0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(56,189,248,0.08);
+      transition: all 0.4s ease;
+    }
+    .navbar.scrolled {
+      background: rgba(15,23,42,0.95);
+      box-shadow: 0 4px 30px rgba(56,189,248,0.1);
+    }
+    .nav-logo {
+      font-size: 1.6rem; font-weight: 700;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: #94a3b8; font-size: 0.9rem; font-weight: 500;
+      position: relative; transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, #38bdf8, #a78bfa);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: #38bdf8; }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* Hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
+    .hamburger span {
+      width: 28px; height: 3px; background: #38bdf8; border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; text-align: center;
+      padding: 6rem 2rem 4rem;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(56,189,248,0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(167,139,250,0.08) 0%, transparent 50%);
+      animation: heroGlow 8s ease-in-out infinite alternate;
+    }
+    @keyframes heroGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-30px, 20px) scale(1.05); }
+    }
+
+    /* Floating Particles */
+    .particles { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: rgba(56,189,248,0.3);
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+    .hero-content .greeting {
+      font-size: 1.1rem; color: #38bdf8; font-weight: 500;
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .hero-content h1 {
+      font-size: 3.8rem; font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #a78bfa 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    .hero-content .typed-line {
+      font-size: 1.3rem; color: #94a3b8; min-height: 2rem; margin-bottom: 16px;
+    }
+    .typed-cursor { color: #38bdf8; animation: blink 0.8s infinite; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    .hero-content p.tagline {
+      font-size: 1rem; color: #64748b; max-width: 600px; margin: 0 auto 30px;
+    }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 30px; border-radius: 50px; font-weight: 600;
+      font-size: 0.95rem; transition: all 0.3s; cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      color: #020617;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(56,189,248,0.3); }
+    .btn-outline {
+      background: transparent; color: #38bdf8;
+      border: 2px solid rgba(56,189,248,0.4);
+    }
+    .btn-outline:hover {
+      background: rgba(56,189,248,0.1); transform: translateY(-3px);
+      border-color: #38bdf8;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: #475569; font-size: 0.75rem; letter-spacing: 2px;
+    }
+    .scroll-mouse {
+      width: 24px; height: 38px; border: 2px solid #475569; border-radius: 12px;
+      position: relative;
+    }
+    .scroll-mouse::after {
+      content: ''; width: 4px; height: 8px; background: #38bdf8;
+      border-radius: 2px; position: absolute; top: 6px; left: 50%;
+      transform: translateX(-50%);
+      animation: scrollDown 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollDown {
+      0% { transform: translateX(-50%) translateY(0); opacity:1; }
+      100% { transform: translateX(-50%) translateY(14px); opacity:0; }
+    }
+
+    /* ===== SECTION COMMON ===== */
+    .section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      font-size: 2.2rem; font-weight: 700; text-align: center; margin-bottom: 12px;
+    }
+    .section-title span {
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .section-subtitle {
+      text-align: center; color: #64748b; margin-bottom: 50px; font-size: 1rem;
+    }
+    .divider {
+      width: 60px; height: 4px; margin: 0 auto 20px;
+      background: linear-gradient(90deg, #38bdf8, #a78bfa);
+      border-radius: 2px;
+    }
+
+    /* ===== ABOUT ===== */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+    }
+    .about-text { font-size: 1rem; color: #94a3b8; }
+    .about-text strong { color: #38bdf8; }
+    .about-stats {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    }
+    .stat-card {
+      background: rgba(15,23,42,0.6); border: 1px solid rgba(56,189,248,0.1);
+      border-radius: 16px; padding: 24px; text-align: center;
+      transition: all 0.3s;
+    }
+    .stat-card:hover {
+      transform: translateY(-5px); border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 10px 30px rgba(56,189,248,0.1);
+    }
+    .stat-num {
+      font-size: 2.2rem; font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.85rem; color: #64748b; margin-top: 4px; }
+
+    /* ===== SKILLS ===== */
+    .skills-container {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;
+    }
+    .skill-tag {
+      background: rgba(15,23,42,0.8); border: 1px solid rgba(56,189,248,0.12);
+      border-radius: 12px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.95rem; font-weight: 500; color: #cbd5e1;
+      transition: all 0.3s; cursor: default;
+    }
+    .skill-tag:hover {
+      border-color: #38bdf8;
+      background: rgba(56,189,248,0.06);
+      box-shadow: 0 0 20px rgba(56,189,248,0.1);
+      transform: translateY(-3px);
+    }
+    .skill-icon { font-size: 1.4rem; }
+
+    /* ===== EXPERIENCE TIMELINE ===== */
+    .timeline { position: relative; padding-left: 40px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 14px; top: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(180deg, #38bdf8, #a78bfa, #38bdf8);
+      border-radius: 2px;
+    }
+    .timeline-item { position: relative; margin-bottom: 40px; }
+    .timeline-dot {
+      position: absolute; left: -33px; top: 6px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #38bdf8;
+      border: 3px solid #020617;
+      box-shadow: 0 0 15px rgba(56,189,248,0.4);
+    }
+    .timeline-card {
+      background: rgba(15,23,42,0.7); border: 1px solid rgba(56,189,248,0.1);
+      border-radius: 16px; padding: 28px;
+      transition: all 0.3s;
+    }
+    .timeline-card:hover {
+      border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 10px 40px rgba(56,189,248,0.08);
+      transform: translateX(6px);
+    }
+    .timeline-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .timeline-company { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; }
+    .timeline-duration {
+      font-size: 0.8rem; color: #38bdf8; font-weight: 600;
+      background: rgba(56,189,248,0.1); padding: 4px 14px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .timeline-role { font-size: 0.95rem; color: #a78bfa; font-weight: 500; margin-bottom: 12px; }
+    .timeline-card ul { padding-left: 18px; }
+    .timeline-card li {
+      color: #94a3b8; font-size: 0.9rem; margin-bottom: 6px;
+      list-style: disc;
+    }
+
+    /* ===== PROJECTS ===== */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;
+    }
+    .project-card {
+      background: rgba(15,23,42,0.7); border: 1px solid rgba(56,189,248,0.1);
+      border-radius: 16px; padding: 30px;
+      transition: all 0.4s;
+      position: relative; overflow: hidden;
+    }
+    .project-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 4px;
+      background: linear-gradient(90deg, #38bdf8, #a78bfa);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .project-card:hover::before { transform: scaleX(1); }
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(56,189,248,0.1);
+      border-color: rgba(56,189,248,0.25);
+    }
+    .project-icon { font-size: 2.2rem; margin-bottom: 14px; }
+    .project-card h3 { font-size: 1.15rem; color: #f1f5f9; margin-bottom: 10px; }
+    .project-card p { color: #94a3b8; font-size: 0.9rem; }
+
+    /* ===== CERTIFICATIONS ===== */
+    .certs-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+    }
+    .cert-card {
+      background: rgba(15,23,42,0.6); border: 1px solid rgba(167,139,250,0.15);
+      border-radius: 16px; padding: 24px;
+      display: flex; align-items: center; gap: 16px;
+      transition: all 0.3s;
+    }
+    .cert-card:hover {
+      border-color: rgba(167,139,250,0.4);
+      box-shadow: 0 10px 30px rgba(167,139,250,0.08);
+      transform: translateY(-4px);
+    }
+    .cert-badge {
+      min-width: 50px; min-height: 50px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(167,139,250,0.2), rgba(56,189,248,0.2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+    .cert-info h4 { font-size: 0.95rem; color: #f1f5f9; margin-bottom: 2px; }
+    .cert-info p { font-size: 0.8rem; color: #64748b; }
+
+    /* ===== EDUCATION ===== */
+    .edu-card {
+      background: rgba(15,23,42,0.6); border: 1px solid rgba(56,189,248,0.1);
+      border-radius: 16px; padding: 30px; max-width: 600px; margin: 0 auto;
+      text-align: center; transition: all 0.3s;
+    }
+    .edu-card:hover {
+      border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 10px 30px rgba(56,189,248,0.08);
+    }
+    .edu-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .edu-card h3 { color: #f1f5f9; font-size: 1.2rem; }
+    .edu-card h4 { color: #a78bfa; font-weight: 500; margin: 4px 0; }
+    .edu-card p { color: #64748b; font-size: 0.9rem; }
+
+    /* ===== RECOGNITION ===== */
+    .recognition-card {
+      background: linear-gradient(135deg, rgba(56,189,248,0.06), rgba(167,139,250,0.06));
+      border: 1px solid rgba(56,189,248,0.15);
+      border-radius: 20px; padding: 40px; text-align: center;
+      max-width: 700px; margin: 0 auto;
+      position: relative; overflow: hidden;
+    }
+    .recognition-card::before {
+      content: '\201C'; position: absolute; top: 10px; left: 24px;
+      font-size: 6rem; color: rgba(56,189,248,0.1); font-family: serif; line-height: 1;
+    }
+    .recognition-card .trophy { font-size: 3rem; margin-bottom: 16px; }
+    .recognition-card h3 { font-size: 1.2rem; color: #f1f5f9; margin-bottom: 12px; }
+    .recognition-card p { color: #94a3b8; font-size: 0.95rem; font-style: italic; }
+    .recognition-year {
+      display: inline-block; margin-top: 16px; padding: 6px 20px;
+      background: rgba(56,189,248,0.1); border-radius: 20px;
+      color: #38bdf8; font-weight: 600; font-size: 0.85rem;
+    }
+
+    /* ===== CONTACT ===== */
+    .contact-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px; max-width: 700px; margin: 0 auto;
+    }
+    .contact-card {
+      background: rgba(15,23,42,0.6); border: 1px solid rgba(56,189,248,0.1);
+      border-radius: 16px; padding: 24px; text-align: center;
+      transition: all 0.3s;
+    }
+    .contact-card:hover {
+      border-color: rgba(56,189,248,0.3);
+      box-shadow: 0 10px 30px rgba(56,189,248,0.1);
+      transform: translateY(-4px);
+    }
+    .contact-icon { font-size: 2rem; margin-bottom: 10px; }
+    .contact-card h4 { color: #f1f5f9; font-size: 0.95rem; margin-bottom: 4px; }
+    .contact-card p { color: #64748b; font-size: 0.88rem; }
+    .contact-card a { color: #38bdf8; font-weight: 500; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center; padding: 2rem;
+      border-top: 1px solid rgba(56,189,248,0.08);
+      color: #475569; font-size: 0.85rem;
+    }
+    footer span {
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-weight: 600;
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .back-top {
+      position: fixed; bottom: 30px; right: 30px;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa);
+      color: #020617; font-size: 1.3rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: all 0.3s;
+      cursor: pointer; border: none; z-index: 999;
+    }
+    .back-top.visible { opacity: 1; pointer-events: all; }
+    .back-top:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(56,189,248,0.3); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .navbar { padding: 1rem 1.5rem; }
+      .nav-links {
+        position: fixed; top: 0; right: -100%; width: 70%; height: 100vh;
+        background: rgba(15,23,42,0.98); flex-direction: column;
+        justify-content: center; align-items: center; gap: 32px;
+        transition: right 0.4s ease;
+      }
+      .nav-links.open { right: 0; }
+      .nav-links a { font-size: 1.15rem; }
+      .hamburger { display: flex; }
+      .hero-content h1 { font-size: 2.4rem; }
+      .hero-content .typed-line { font-size: 1rem; }
+      .section { padding: 3.5rem 1.2rem; }
+      .section-title { font-size: 1.8rem; }
+      .timeline { padding-left: 30px; }
+      .timeline-header { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .hero-content h1 { font-size: 1.9rem; }
+      .about-stats { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .stat-num { font-size: 1.6rem; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <a href="#" class="nav-logo">RK</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about" onclick="closeMenu()">About</a></li>
+      <li><a href="#skills" onclick="closeMenu()">Skills</a></li>
+      <li><a href="#experience" onclick="closeMenu()">Experience</a></li>
+      <li><a href="#projects" onclick="closeMenu()">Projects</a></li>
+      <li><a href="#certifications" onclick="closeMenu()">Certifications</a></li>
+      <li><a href="#recognition" onclick="closeMenu()">Recognition</a></li>
+      <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="home">
+    <div class="particles" id="particles"></div>
+    <div class="hero-content" data-aos="fade-up" data-aos-duration="1200">
+      <p class="greeting">Hello, I'm</p>
+      <h1>Ravali Kallem</h1>
+      <div class="typed-line"><span id="typed"></span><span class="typed-cursor">|</span></div>
+      <p class="tagline">Driving scalable systems, automation, and data-driven decisions across global enterprise teams.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn btn-primary">&#9993; Get In Touch</a>
+        <a href="#experience" class="btn btn-outline">&#9654; View My Work</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-mouse"></div>
+      SCROLL
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section" id="about">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">About <span>Me</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">Turning complex systems into seamless experiences</p>
+    <div class="about-grid">
+      <div data-aos="fade-right" data-aos-delay="100">
+        <p class="about-text">
+          I'm a <strong>Strategic and detail-oriented Business Systems Analyst</strong> with 4+ years of experience spanning <strong>project management</strong>, deal operations, system configuration, and workflow automation in enterprise environments.<br><br>
+          I bring proven expertise in <strong>Salesforce</strong>, <strong>Gainsight</strong>, and <strong>Gong</strong> integrations to optimise quote-to-cash processes, streamline pre-booking reviews, and resolve system blockers. I recently led the <strong>Gong &ndash; Seismic integration</strong> end-to-end, enabling reps to save 30+ hours per week.<br><br>
+          I'm currently driving a <strong>Microsoft Dynamics SaaS application</strong> powered by AI intelligence that sits on top of every customer data point. Adept at leading projects from requirement to rollout, driving cross-functional collaboration, and enabling sales and customer success teams with scalable tools and solutions.
+        </p>
+      </div>
+      <div class="about-stats" data-aos="fade-left" data-aos-delay="200">
+        <div class="stat-card">
+          <div class="stat-num">4+</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Companies</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Certifications</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">30+</div>
+          <div class="stat-label">Hrs Saved / Rep Weekly</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section class="section" id="skills">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">Core <span>Skills</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">Tools & technologies I work with every day</p>
+    <div class="skills-container">
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="0"><span class="skill-icon">&#128203;</span> Project Management</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="50"><span class="skill-icon">&#128736;</span> Gong Administration</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="100"><span class="skill-icon">&#9889;</span> Salesforce &amp; Gainsight</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="150"><span class="skill-icon">&#128268;</span> API Integration</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="200"><span class="skill-icon">&#129504;</span> MS Dynamics &amp; AI Intelligence</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="250"><span class="skill-icon">&#9881;</span> Custom Automation</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="300"><span class="skill-icon">&#129309;</span> Stakeholder Management</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="350"><span class="skill-icon">&#128221;</span> Business Requirement Gathering</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="400"><span class="skill-icon">&#128197;</span> Agile Delivery &amp; Roadmapping</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="450"><span class="skill-icon">&#9989;</span> Data Validation &amp; Testing</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="500"><span class="skill-icon">&#128161;</span> Solution Design</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="550"><span class="skill-icon">&#128269;</span> Problem-Solving &amp; Analytics</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="600"><span class="skill-icon">&#128260;</span> Workflow Automation</div>
+      <div class="skill-tag" data-aos="fade-up" data-aos-delay="650"><span class="skill-icon">&#128274;</span> Compliance &amp; Data Privacy</div>
+    </div>
+  </section>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <section class="section" id="experience">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">Professional <span>Experience</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">My career journey so far</p>
+    <div class="timeline">
+
+      <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <div class="timeline-company">Thomson Reuters</div>
+            <span class="timeline-duration">Nov 2024 &#8211; Present</span>
+          </div>
+          <div class="timeline-role">Business Systems Analyst &mdash; Commercial Excellence</div>
+          <ul>
+            <li>Managed the <strong>Gong &ndash; Seismic integration</strong> project end-to-end &mdash; from requirement gathering and stakeholder alignment to rollout &mdash; and successfully delivered it by enabling users, saving reps at least <strong>30 hours per week</strong>.</li>
+            <li>Currently leading a <strong>Microsoft Dynamics SaaS application</strong> initiative that leverages AI intelligence layered on top of all customer data points to surface actionable insights.</li>
+            <li>Drove project delivery across cross-functional stakeholders, defining scope, timelines, and success criteria while keeping IT, Sales, and CS aligned throughout each phase.</li>
+            <li>Led system administration for Gong, managing user provisioning, permissions, and onboarding to drive adoption across global teams.</li>
+            <li>Diagnosed and resolved system blockers related to Gong integrations with Salesforce and Genesys, improving data synchronisation and call analytics.</li>
+            <li>Conducted pre-booking quality checks for Gong usage data, ensuring accuracy in pipeline reporting and sales enablement metrics.</li>
+            <li>Collaborated with IT, Sales, and CS to optimise workflows, automate reporting, and reduce quote-to-booking cycle time.</li>
+            <li>Provided feedback to system owners to inform roadmap improvements and enhance platform scalability.</li>
+            <li>Ensured data privacy and compliance in user access management and call tracking systems.</li>
+            <li>Worked with Compliance team on security analysis.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <div class="timeline-company">RJEYS Infinity Solutions</div>
+            <span class="timeline-duration">Apr 2021 &#8211; Nov 2024</span>
+          </div>
+          <div class="timeline-role">Solutions Engineer &mdash; Professional Services</div>
+          <ul>
+            <li>Configured and maintained Gainsight and Salesforce systems to support customer success and sales operations across enterprise clients.</li>
+            <li>Implemented automation rules and custom API integrations to streamline recurring deal management tasks and reduce manual effort.</li>
+            <li>Conducted detailed analysis of customer lifecycle data to identify risks and enable proactive engagement strategies.</li>
+            <li>Collaborated with product and engineering teams to design system enhancements, support roadmap planning, and validate feature releases.</li>
+            <li>Led internal QA testing and documentation of new configurations and workflow updates to ensure compliance and system integrity.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item" data-aos="fade-up" data-aos-delay="300">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <div class="timeline-company">Talent Reactor Technologies</div>
+            <span class="timeline-duration">Oct 2020 &#8211; Mar 2021</span>
+          </div>
+          <div class="timeline-role">Customer Success Analyst Intern &mdash; CSOPS Team</div>
+          <ul>
+            <li>Streamlined Customer Success processes by implementing automation tools, improving overall efficiency by 20%.</li>
+            <li>Analysed customer data and generated insights to help the Customer Success team proactively manage client health and reduce churn.</li>
+            <li>Collaborated with cross-functional teams to optimise workflows and ensure seamless customer handoffs from Sales to Customer Success.</li>
+            <li>Maintained and enhanced the CRM system, ensuring accurate and real-time customer data for use by internal teams.</li>
+            <li>Created and monitored the effectiveness of customer journey maps, supporting the Customer Success team in delivering a personalised customer experience.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section class="section" id="projects">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">Projects &amp; <span>Impact</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">Key initiatives that made a difference</p>
+    <div class="projects-grid">
+      <div class="project-card" data-aos="zoom-in" data-aos-delay="100">
+        <div class="project-icon">&#128203;</div>
+        <h3>Gong &ndash; Seismic Integration <span style="color:#38bdf8;">(Completed)</span></h3>
+        <p>Owned project management for the Gong &ndash; Seismic integration end-to-end &mdash; scoping requirements, aligning stakeholders, and driving the rollout to completion. Enabled users across teams and successfully delivered, saving each rep at least 30 hours per week.</p>
+      </div>
+      <div class="project-card" data-aos="zoom-in" data-aos-delay="200">
+        <div class="project-icon">&#129504;</div>
+        <h3>MS Dynamics AI Intelligence SaaS <span style="color:#a78bfa;">(In Progress)</span></h3>
+        <p>Leading a Microsoft Dynamics SaaS application that leverages AI intelligence sitting on top of every customer data point. The platform unifies customer data to power smarter, data-driven decisions and proactive engagement across the business.</p>
+      </div>
+      <div class="project-card" data-aos="zoom-in" data-aos-delay="300">
+        <div class="project-icon">&#128268;</div>
+        <h3>API Integration &amp; Custom Automation</h3>
+        <p>Designed and implemented API integrations to connect Gainsight with other enterprise systems, facilitating seamless data exchange. Developed custom automation scripts to handle repetitive tasks, significantly reducing manual workload and increasing operational efficiency.</p>
+      </div>
+      <div class="project-card" data-aos="zoom-in" data-aos-delay="100">
+        <div class="project-icon">&#128640;</div>
+        <h3>Successful Onboarding Optimisation</h3>
+        <p>Streamlined the onboarding process for new team members by creating efficient workflows for setting up Gainsight accounts, reducing onboarding time and ensuring a smooth transition for new staff.</p>
+      </div>
+      <div class="project-card" data-aos="zoom-in" data-aos-delay="200">
+        <div class="project-icon">&#128202;</div>
+        <h3>Data Quality Improvement</h3>
+        <p>Collaborated with cross-functional teams, particularly the Enterprise Data Warehouse team, to validate and improve the quality of data ingested into Gainsight, contributing to more accurate and actionable customer data.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CERTIFICATIONS ===== -->
+  <section class="section" id="certifications">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">Certifi<span>cations</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">Professional credentials that validate my expertise</p>
+    <div class="certs-grid">
+      <div class="cert-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="cert-badge">&#127941;</div>
+        <div class="cert-info">
+          <h4>Gainsight NXT Level 3</h4>
+          <p>Advanced administration &amp; configuration</p>
+        </div>
+      </div>
+      <div class="cert-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="cert-badge">&#127942;</div>
+        <div class="cert-info">
+          <h4>Gainsight NXT Level 2</h4>
+          <p>Reports, Dashboards, Surveys &amp; JOs</p>
+        </div>
+      </div>
+      <div class="cert-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="cert-badge">&#127775;</div>
+        <div class="cert-info">
+          <h4>Gainsight NXT Associate Admin</h4>
+          <p>Level 1 &mdash; Foundation Certification</p>
+        </div>
+      </div>
+      <div class="cert-card" data-aos="fade-up" data-aos-delay="400">
+        <div class="cert-badge">&#128273;</div>
+        <div class="cert-info">
+          <h4>Gong Admin Certification</h4>
+          <p>System Administration &amp; Configuration</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EDUCATION ===== -->
+  <section class="section" id="education">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">Edu<span>cation</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">Academic foundation</p>
+    <div class="edu-card" data-aos="zoom-in">
+      <div class="edu-icon">&#127891;</div>
+      <h3>MLR Institute of Technology</h3>
+      <h4>Bachelor of Technology in Computer Science</h4>
+      <p>Hyderabad, Telangana &bull; GPA: 7.64</p>
+    </div>
+  </section>
+
+  <!-- ===== RECOGNITION ===== -->
+  <section class="section" id="recognition">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">Appreciation &amp; <span>Recognition</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">Valued contributions that were recognised</p>
+    <div class="recognition-card" data-aos="zoom-in">
+      <div class="trophy">&#127942;</div>
+      <h3>Outstanding Contributor &mdash; 2025</h3>
+      <p>Recognised for outstanding contributions, cross-functional collaboration, and consistent delivery of high-impact system improvements at Thomson Reuters.</p>
+      <div class="recognition-year">&#11088; 2025 Appreciation Award</div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section" id="contact">
+    <div class="divider" data-aos="fade-up"></div>
+    <h2 class="section-title" data-aos="fade-up">Get In <span>Touch</span></h2>
+    <p class="section-subtitle" data-aos="fade-up">Let's connect and create something great</p>
+    <div class="contact-grid">
+      <div class="contact-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="contact-icon">&#9993;</div>
+        <h4>Email</h4>
+        <p><a href="mailto:ravalikallem25@gmail.com">ravalikallem25@gmail.com</a></p>
+      </div>
+      <div class="contact-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="contact-icon">&#128205;</div>
+        <h4>Location</h4>
+        <p>Hyderabad, Telangana, India</p>
+      </div>
+      <div class="contact-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="contact-icon">&#128222;</div>
+        <h4>Phone</h4>
+        <p><a href="tel:+919550634225">+91 9550634225</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>&copy; 2026 <span>Ravali Kallem</span>. Crafted with passion &amp; precision.</p>
+  </footer>
+
+  <!-- Back to Top -->
+  <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
+
+  <!-- AOS JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+    // ===== Init AOS =====
+    AOS.init({ duration: 800, once: true, offset: 80 });
+
+    // ===== Navbar scroll effect =====
+    window.addEventListener('scroll', function() {
+      var nav = document.getElementById('navbar');
+      var btn = document.getElementById('backTop');
+      if (window.scrollY > 60) {
+        nav.classList.add('scrolled');
+        btn.classList.add('visible');
+      } else {
+        nav.classList.remove('scrolled');
+        btn.classList.remove('visible');
+      }
+    });
+
+    // ===== Mobile menu =====
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+      document.getElementById('hamburger').classList.toggle('active');
+    }
+    function closeMenu() {
+      document.getElementById('navLinks').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('active');
+    }
+
+    // ===== Typing effect =====
+    (function() {
+      var phrases = [
+        "Business Systems Analyst",
+        "Project Management Lead",
+        "Gong & Salesforce Specialist",
+        "AI & Data Intelligence Enthusiast",
+        "Workflow Automation Expert",
+        "Cross-Functional Collaborator"
+      ];
+      var el = document.getElementById('typed');
+      var phraseIdx = 0, charIdx = 0, deleting = false;
+      function type() {
+        var current = phrases[phraseIdx];
+        if (!deleting) {
+          el.textContent = current.substring(0, charIdx + 1);
+          charIdx++;
+          if (charIdx === current.length) {
+            deleting = true;
+            setTimeout(type, 1800);
+            return;
+          }
+          setTimeout(type, 70);
+        } else {
+          el.textContent = current.substring(0, charIdx - 1);
+          charIdx--;
+          if (charIdx === 0) {
+            deleting = false;
+            phraseIdx = (phraseIdx + 1) % phrases.length;
+            setTimeout(type, 400);
+            return;
+          }
+          setTimeout(type, 40);
+        }
+      }
+      type();
+    })();
+
+    // ===== Particles =====
+    (function() {
+      var container = document.getElementById('particles');
+      for (var i = 0; i < 25; i++) {
+        var p = document.createElement('div');
+        p.className = 'particle';
+        var size = Math.random() * 5 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (Math.random() * 8 + 6) + 's';
+        p.style.animationDelay = (Math.random() * 6) + 's';
+        if (Math.random() > 0.5) p.style.background = 'rgba(167,139,250,0.25)';
+        container.appendChild(p);
+      }
+    })();
+  </script>
+
+</body>
+</html>
